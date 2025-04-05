@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './app.css';
+import './App.css';
 
 const App = () => {
   const [step, setStep] = useState(1);
