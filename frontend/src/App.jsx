@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './app.css';
 
-const AadhaarOCR = () => {
+const App = () => {
+  const [step, setStep] = useState(1);
   const [image, setImage] = useState(null);
-  const [dob, setDob] = useState("");
-  const [country, setCountry] = useState("");
+  const [dob, setDob] = useState('');
+  const [country, setCountry] = useState('');
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
 
-  const API_KEY = "AIzaSyCJiPMh3iLgdHB4MXdzYvIl-wvONCWkdpw";
+  const API_KEY = 'AIzaSyCJiPMh3iLgdHB4MXdzYvIl-wvONCWkdpw';
 
   useEffect(() => {
     if (image) {
       const objectUrl = URL.createObjectURL(image);
       setPreview(objectUrl);
-
       return () => URL.revokeObjectURL(objectUrl);
     }
   }, [image]);
@@ -30,13 +31,13 @@ const AadhaarOCR = () => {
     new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); 
+      reader.onload = () => resolve(reader.result.split(',')[1]);
       reader.onerror = (error) => reject(error);
     });
 
   const extractData = async () => {
     if (!image) {
-      alert("Please upload an image first.");
+      alert('Please upload an image first.');
       return;
     }
 
@@ -44,21 +45,20 @@ const AadhaarOCR = () => {
 
     try {
       const base64Image = await getBase64(image);
-
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
         {
           contents: [
             {
               parts: [
                 {
                   inlineData: {
-                    mimeType: "image/jpeg",
+                    mimeType: 'image/jpeg',
                     data: base64Image,
                   },
                 },
                 {
-                  text: "Extract the Date of Birth and mention which government's document this is.",
+                  text: 'Extract the Date of Birth and mention which government document this is.',
                 },
               ],
             },
@@ -66,38 +66,57 @@ const AadhaarOCR = () => {
         }
       );
 
-      const text = response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || "No text found";
-
+      const text = response?.data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No text found';
       const dobMatch = text.match(/\b\d{2}\/\d{2}\/\d{4}\b/);
-      setDob(dobMatch ? dobMatch[0] : "DOB not found");
-
-      setCountry(text.includes("Government of India") ? "India" : "Not detected");
+      setDob(dobMatch ? dobMatch[0] : 'DOB not found');
+      setCountry(text.includes('Government of India') ? 'India' : 'Not detected');
     } catch (error) {
-      console.error("Error processing image:", error);
-      alert("Failed to extract data. Try again.");
+      console.error('Error processing image:', error);
+      alert('Failed to extract data. Try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="bg-white p-6 rounded-lg shadow-md w-96 text-center">
-        <h2 className="text-xl font-semibold">Aadhaar OCR Extraction</h2>
-        <input type="file" accept="image/*" onChange={handleImageUpload} className="mt-4" />
-        {preview && <img src={preview} alt="Uploaded Aadhaar" className="mt-4 w-full rounded-md" />}
-        <button
-          onClick={extractData}
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md"
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Extract Details"}
-        </button>
-        {dob && <p className="mt-4 text-lg">📅 DOB: {dob}</p>}
-        {country && <p className="mt-2 text-lg">🏛️ Government: {country}</p>}
-      </div>
+    <div className="container">
+      {step === 1 && (
+        <div>
+          <h2>Getting started</h2>
+          <p>We need some information to help us confirm your identity.</p>
+          <button className="button" onClick={() => setStep(2)}>Begin verifying</button>
+        </div>
+      )}
+      {step === 2 && (
+        <div>
+          <h2>Upload a photo ID</h2>
+          <p>We require a photo of a government ID to verify your identity.</p>
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="file-input" />
+          {preview && <img src={preview} alt="Uploaded ID" className="preview-image" />}
+          <button className="button" onClick={() => setStep(3)}>Next</button>
+        </div>
+      )}
+      {step === 3 && (
+        <div>
+          <h2>Extracting Data</h2>
+          <p>Processing the uploaded image...</p>
+          <button className="button" onClick={extractData} disabled={loading}>
+            {loading ? 'Processing...' : 'Extract Details'}
+          </button>
+          {dob && <p className="result">📅 DOB: {dob}</p>}
+          {country && <p className="result">🏛️ Government: {country}</p>}
+          <button className="button secondary" onClick={() => setStep(4)}>Continue</button>
+        </div>
+      )}
+      {step === 4 && (
+        <div>
+          <h2>Verify your identity</h2>
+          <img src="face-scan.png" alt="Face Scan" className="image" />
+          <button className="button">Start Scan</button>
+        </div>
+      )}
     </div>
   );
 };
 
-export default AadhaarOCR;
+export default App;
