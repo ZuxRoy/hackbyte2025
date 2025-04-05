@@ -12,52 +12,56 @@ body {
   width: 100%;
   max-width: 400px;
   background: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: left; 
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
   text-align: left;
 }
 
-.container h2 {
+h2 {
+  margin: 0 0 15px 0;
+  font-size: 22px;
+  color: #333;
+  font-weight: 600;
   text-align: left;
-  margin-bottom: 10px;
 }
 
-.container p {
-  text-align: left;
-  margin-bottom: 20px;
+p {
+  margin: 0 0 20px 0;
   color: #666;
+  line-height: 1.5;
+  font-size: 15px;
+  text-align: left;
 }
 
-.button {
-  background-color: #5447a5;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 16px;
-  margin-top: 10px;
+.privacy-text {
+  font-size: 13px;
+  color: #999;
+  text-align: left;
+  margin-top: 20px;
 }
 
-.button:hover {
-  background-color: #423787;
-}
 
-.file-input {
-  margin: 15px 0;
-  width: 100%;
-}
-
-.preview-image {
-  max-width: 100%;
-  margin-top: 15px;
+.id-type-selector {
+  padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  text-align: left; 
 }
 
 .result {
   margin-top: 15px;
   font-weight: bold;
+  text-align: left; 
 }
