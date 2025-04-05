@@ -15,7 +15,18 @@ body {
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  text-align: left;
+}
+
+.container h2 {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.container p {
+  text-align: left;
+  margin-bottom: 20px;
+  color: #666;
 }
 
 .button {
@@ -32,4 +43,21 @@ body {
 
 .button:hover {
   background-color: #423787;
+}
+
+.file-input {
+  margin: 15px 0;
+  width: 100%;
+}
+
+.preview-image {
+  max-width: 100%;
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.result {
+  margin-top: 15px;
+  font-weight: bold;
 }

@@ -2,6 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+const calculateAge = (dobString) => {
+  const [day, month, year] = dobString.split('/').map(Number);
+  const dobDate = new Date(year, month - 1, day);
+  
+  const currentDate = new Date(2025, 3, 5); 
+  
+  let age = currentDate.getFullYear() - dobDate.getFullYear();
+  
+  const monthDiff = currentDate.getMonth() - dobDate.getMonth();
+  if (monthDiff < 0 || 
+      (monthDiff === 0 && currentDate.getDate() < dobDate.getDate())) {
+    age--;
+  }
+  
+  return age;
+};
+
 const App = () => {
   const [step, setStep] = useState(1);
   const [image, setImage] = useState(null);
@@ -96,25 +113,21 @@ const App = () => {
           <button className="button" onClick={() => setStep(3)}>Next</button>
         </div>
       )}
-      {step === 3 && (
-        <div>
-          <h2>Extracting Data</h2>
-          <p>Processing the uploaded image...</p>
-          <button className="button" onClick={extractData} disabled={loading}>
-            {loading ? 'Processing...' : 'Extract Details'}
-          </button>
-          {dob && <p className="result">📅 DOB: {dob}</p>}
-          {country && <p className="result">🏛️ Government: {country}</p>}
-          <button className="button secondary" onClick={() => setStep(4)}>Continue</button>
-        </div>
-      )}
-      {step === 4 && (
-        <div>
-          <h2>Verify your identity</h2>
-          <img src="face-scan.png" alt="Face Scan" className="image" />
-          <button className="button">Start Scan</button>
-        </div>
-      )}
+{step === 3 && (
+  <div>
+    <h2>Extracting Data</h2>
+    <p>Processing the uploaded image...</p>
+    <button className="button" onClick={extractData} disabled={loading}>
+      {loading ? 'Processing...' : 'Extract Details'}
+    </button>
+    {dob && (
+      <p className="result">
+        Age: {calculateAge(dob)} years
+      </p>
+    )}
+    {country && <p className="result">Government: {country}</p>}
+  </div>
+)}
     </div>
   );
 };
